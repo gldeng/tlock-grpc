@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  go_server:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.go
+    container_name: go_server_container
+    ports:
+      - "50051:50051"
+    entrypoint: ["/app/server", "-drand-url", "https://api3.drand.sh/"]
+
+  csharp_client:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.csharp
+    container_name: csharp_client_container
+    ports:
+      - "5290:8080"
+    depends_on:
+      - go_server
+    volumes:
+      - ./docker/appsettings.json:/app/appsettings.json
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
