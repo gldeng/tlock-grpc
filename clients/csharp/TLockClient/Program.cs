@@ -66,6 +66,10 @@ app.MapPost("/encrypt", async (EncryptDto request) =>
             };
             return Results.Ok(response);
         }
+        catch (DurationParseError ex)
+        {
+            return Results.Problem(detail: ex.Message, statusCode: -2); 
+        }
         catch (ValidationException ex)
         {
             return Results.Problem(detail: ex.Message, statusCode: -1);
