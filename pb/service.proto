@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+package tlock;
+
+option go_package = "github.com/gldeng/tlock-grpc/pb";
+
+import "google/protobuf/timestamp.proto";
+
+service TLockService {
+    rpc Encrypt (EncryptRequest) returns (EncryptResponse);
+    rpc Decrypt (DecryptRequest) returns (DecryptResponse);
+}
+
+message EncryptRequest {
+    string chain_hash = 1;
+    bytes data = 2;
+    uint64 round_number = 3;
+    bool force = 4;
+    google.protobuf.Timestamp disclosure_time = 5;
+}
+
+message EncryptResponse {
+    bytes encryptedData = 1;
+}
+
+message DecryptRequest {
+    string chain_hash = 1;
+    bytes encryptedData = 2;
+}
+
+message DecryptResponse {
+    bytes data = 1;
+}
