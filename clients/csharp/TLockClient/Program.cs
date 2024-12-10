@@ -36,6 +36,8 @@ app.MapPost("/encrypt", async (EncryptDto request) =>
                 Data = ByteString.CopyFromUtf8(request.Text),
                 Force = true
             };
+
+            // Add round or disclosureTime
             if (request.Round > 0)
             {
                 grpcRequest.RoundNumber = request.Round;
