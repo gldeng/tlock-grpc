@@ -8,7 +8,7 @@ This repo is providing services similar to drand [tlock](https://github.com/dran
 docker compose up -d
 ```
 
-Then you can head over to `http://localhost:5290/swagger/index.html`.
+Then you can head over to http://localhost:5290/swagger/index.html.
 
 For Encryption:
 ![Encryption](./images/encrypt.png)
