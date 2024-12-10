@@ -55,10 +55,11 @@ app.MapPost("/encrypt", async (EncryptDto request) =>
             var grpcResponse = await client.EncryptAsync(grpcRequest);
             var encrypted = grpcResponse.EncryptedData.ToBase64();
             // ReSharper disable once ComplexConditionExpression
-            var chopIntoChunksOf64 = (string value) => string.Join("\n",
-                Enumerable.Range(0, value.Length / 64 + (value.Length % 64 == 0 ? 0 : 1))
+            string ChopIntoChunksOf64(string value) =>
+                string.Join("\n", Enumerable.Range(0, value.Length / 64 + (value.Length % 64 == 0 ? 0 : 1))
                     .Select(i => value.Substring(i * 64, Math.Min(64, value.Length - i * 64))));
-            var chunkedEncrypted = chopIntoChunksOf64(encrypted);
+
+            var chunkedEncrypted = ChopIntoChunksOf64(encrypted);
             var response = new EncryptResponseDto
             {
                 Encrypted = encrypted,
