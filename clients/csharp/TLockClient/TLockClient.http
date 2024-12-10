@@ -1,6 +1,16 @@
 @TLockClient_HostAddress = http://localhost:5290
 
-GET {{TLockClient_HostAddress}}/weatherforecast/
+POST {{TLockClient_HostAddress}}/encrypt/
 Accept: application/json
 
-###
+{
+  "text": "123"
+}
+
+
+POST {{TLockClient_HostAddress}}/decrypt/
+Accept: application/json
+
+{
+  "encrypted": "YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IHRsb2NrIDEzNjY2NzU1IDUyZGI5YmE3MGUwY2MwZjZlYWY3ODAzZGQwNzQ0N2ExZjU0Nzc3MzVmZDNmNjYxNzkyYmE5NDYwMGM4NGU5NzEKcVdrVjBwUmp3eG9HdCtlMkQwYVh3OHZGaDd6dk9hTDNkRmZmMEZ4cGNTVkk1TkJ6WEs1NUpFdVh3L3hiN0hwOApDR3ROTzZQS2pGQ2NHU2hscGc2djlCTWM4RVk0b0U1cW5TUy9NWkttM0hZL3plK0E2clhlL1VOR2diKzRIZ2pyCldCRkhNZ1IvSWMrU25mQ1VrQ3RZSFByRk1USGFnWnM4czhGem9KSnduS1EKLS0tIG1qNndRN0Frb01mMVNGMm5QeitCM0dzQ0NXVVc5bE1TbnJSUkhFWTlSVE0KheLqYAF3UzsEY9OfzLW8uHPcEdvvjnGZqqhUR4+IOmSx0lE="
+}
