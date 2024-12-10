@@ -53,7 +53,17 @@ app.MapPost("/encrypt", async (EncryptDto request) =>
             }
 
             var grpcResponse = await client.EncryptAsync(grpcRequest);
-            var response = new EncryptResponseDto { Encrypted = grpcResponse.EncryptedData.ToBase64() };
+            var encrypted = grpcResponse.EncryptedData.ToBase64();
+            // ReSharper disable once ComplexConditionExpression
+            var chopIntoChunksOf64 = (string value) => string.Join("\n",
+                Enumerable.Range(0, value.Length / 64 + (value.Length % 64 == 0 ? 0 : 1))
+                    .Select(i => value.Substring(i * 64, Math.Min(64, value.Length - i * 64))));
+            var chunkedEncrypted = chopIntoChunksOf64(encrypted);
+            var response = new EncryptResponseDto
+            {
+                Encrypted = encrypted,
+                Pem = $"-----BEGIN AGE ENCRYPTED FILE-----\n{chunkedEncrypted}\n-----END AGE ENCRYPTED FILE-----"
+            };
             return Results.Ok(response);
         }
         catch (ValidationException ex)

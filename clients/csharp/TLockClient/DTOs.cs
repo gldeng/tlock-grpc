@@ -33,6 +33,10 @@ public class EncryptResponseDto
     /// The encrypted data in base64 format.
     /// </summary>
     public string Encrypted { get; set; }
+    /// <summary>
+    /// The encrypted data in PEM format which can be used in https://timevault.drand.love/.
+    /// </summary>
+    public string Pem { get; set; }
 }
 
 public class DecryptResponseDto
