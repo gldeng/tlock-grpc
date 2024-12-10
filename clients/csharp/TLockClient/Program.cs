@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using Google.Protobuf;
 using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;
@@ -33,11 +34,31 @@ app.MapPost("/encrypt", async (EncryptDto request) =>
             {
                 ChainHash = chainHash,
                 Data = ByteString.CopyFromUtf8(request.Text),
-                DisclosureTime = Timestamp.FromDateTime(DateTime.UtcNow.AddMinutes(1))
+                Force = true
             };
+            if (request.Round > 0)
+            {
+                grpcRequest.RoundNumber = request.Round;
+            }
+            else if (!string.IsNullOrWhiteSpace(request.Duration))
+            {
+                var start = DateTime.UtcNow;
+                var totalDuration = DurationParser.ParseDurationsAsSeconds(start, request.Duration);
+                var decryptionTime = start.Add(totalDuration);
+                grpcRequest.DisclosureTime = Timestamp.FromDateTime(decryptionTime);
+            }
+            else
+            {
+                throw new ValidationException("you must provide either duration or a round to encrypt");
+            }
+
             var grpcResponse = await client.EncryptAsync(grpcRequest);
             var response = new EncryptResponseDto { Encrypted = grpcResponse.EncryptedData.ToBase64() };
             return Results.Ok(response);
+        }
+        catch (ValidationException ex)
+        {
+            return Results.Problem(detail: ex.Message, statusCode: -1);
         }
         catch (RpcException ex)
         {
