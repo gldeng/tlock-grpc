@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.5.1
 // - protoc             v3.20.3
-// source: service.proto
+// source: tlock.proto
 
 package pb
 
@@ -155,5 +155,5 @@ var TLockService_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "service.proto",
+	Metadata: "tlock.proto",
 }
