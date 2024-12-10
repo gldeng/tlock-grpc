@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"context"
+	"flag"
 	"fmt"
 	"log"
 	"net"
@@ -17,10 +18,11 @@ import (
 
 type server struct {
 	pb.UnimplementedTLockServiceServer
+	url string
 }
 
 func (s *server) Encrypt(ctx context.Context, req *pb.EncryptRequest) (*pb.EncryptResponse, error) {
-	network, err := http.NewNetwork("https://drand.cloudflare.com/", req.ChainHash)
+	network, err := http.NewNetwork(s.url, req.ChainHash)
 	if err != nil {
 		return nil, err
 	}
@@ -53,7 +55,7 @@ func (s *server) Encrypt(ctx context.Context, req *pb.EncryptRequest) (*pb.Encry
 }
 
 func (s *server) Decrypt(ctx context.Context, req *pb.DecryptRequest) (*pb.DecryptResponse, error) {
-	network, err := http.NewNetwork("https://drand.cloudflare.com/", req.ChainHash)
+	network, err := http.NewNetwork(s.url, req.ChainHash)
 	if err != nil {
 		return nil, err
 	}
@@ -67,13 +69,18 @@ func (s *server) Decrypt(ctx context.Context, req *pb.DecryptRequest) (*pb.Decry
 }
 
 func main() {
-	lis, err := net.Listen("tcp", ":50051")
+	// Define command-line flags
+	port := flag.String("port", "50051", "The server port")
+	url := flag.String("drand-url", "https://drand.cloudflare.com/", "The drand network URL")
+	flag.Parse()
+
+	lis, err := net.Listen("tcp", ":"+*port)
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
 	}
 	s := grpc.NewServer()
 	reflection.Register(s)
-	pb.RegisterTLockServiceServer(s, &server{})
+	pb.RegisterTLockServiceServer(s, &server{url: *url})
 	log.Printf("server listening at %v", lis.Addr())
 	if err := s.Serve(lis); err != nil {
 		log.Fatalf("failed to serve: %v", err)
